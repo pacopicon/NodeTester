@@ -1,0 +1,21 @@
+{
+  "name": "nodetester",
+  "version": "1.0.0",
+  "description": "small program to test node code",
+  "main": "test.js",
+  "scripts": {
+    "test": "node test.js",
+    "test2": "node test2.js"
+  },
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "d3-time-format": "2.0.5",
+    "axios": "^0.18.0",
+    "mssql": "^4.1.0"
+  },
+  "keywords": [
+    "tester"
+  ],
+  "author": "paco",
+  "license": "ISC"
+}
