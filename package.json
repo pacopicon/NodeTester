@@ -5,7 +5,8 @@
   "main": "test.js",
   "scripts": {
     "test": "node test.js",
-    "test2": "node test2.js"
+    "test2": "node test2.js",
+    "test3": "node test3.js"
   },
   "dependencies": {
     "dotenv": "^4.0.0",

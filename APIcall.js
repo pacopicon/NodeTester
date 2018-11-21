@@ -161,12 +161,16 @@ exports.integrateData = async (symbol, callback) => {
     
     await axios.get(http1)
             .then( async (datum) => {
-              console.log('datum = ', datum)
+              datum = parseData(datum.data, 1)
               await axios.get(http2)
-                      .then( (data) => {
-                        console.log('data = ', data)
+                      .then( (datums) => {
+                        let timeScales = [8, 32, 94, 187, 366, 731]
+                        let data = []
+                        for (let i=0; i<timeScales.length; i++) {
+                          data.push(parseData(datums.data, timeScales[i]))
+                        }
                         let output = packageData(data, datum)
-                        callback(output)
+                        callback(output, symbol)
                       })
                       .catch( (error) => {
                         console.log(error);
@@ -175,34 +179,4 @@ exports.integrateData = async (symbol, callback) => {
             .catch( (error) => {
               console.log(error);
             });
-}
-
-const fetchData = (http, isIntraday, callback) => {
-  try {
-    fetch(http)
-    .then(response => {
-      return response.json()
-    })
-    .then(json => {
-      let output = ''
-
-      if (isIntraday) {
-        output = parseData(json, 1)
-      } else {
-        let timeScales = [8, 32, 94, 187, 366, 731]
-        output = []
-        for (let i=0; i<timeScales.length; i++) {
-          output.push(parseData(json, timeScales[i]))
-        }
-      }
-      callback(output)
-    })
-    .catch(err => {
-      console.log('Error pulling closeData from API: ', err)
-      return null
-    })
-  }
-  catch (err) {
-    console.log('error calling api: ', err)
-  }
 }

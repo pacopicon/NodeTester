@@ -1,40 +1,51 @@
 const fs = require('fs')
 const {integrateData} = require('./APIcall')
+const fileContents = require('./data')
 
-const objToString = (obj, bool, fn) => {
+
+const objToString = (obj) => {
+  let line = ''
   for (p in obj) {
     if (typeof obj[p] == 'object') {
-      objToString(obj[p], bool, fn)
+      objToString(obj[p])
     } else {
-      if (typeof obj[p] != 'function') {
-        if (bool && obj[p] == fn.trim() + '.csv') {
-          let line = `\n${p}: ${obj[p]}`
-          listString += line + listString
-        } else if (!bool) {
-          let line = `\n${p}: ${obj[p]}`
-          listString += line
-        }
-      }
+      line += `\n${p}: ${obj[p]}`
     }
   }
-  if (!bool) {
-    listString += `\r\n============`
-  }
-  return listString
+  console.log(line)
+  return line
 }
 
-const writeData = () => {
-  let data = integrateData('MMM', (datum) => {
-    let currPrice = datum.datePrice
+const isEmpty = (obj) => {
+  for(var prop in obj) {
+      if(obj.hasOwnProperty(prop))
+          return false;
+  }
+  return true;
+}
 
-    fs.appendFile('data.js', currPrice, (err) => {
-      if (err) {
-        console.log('Did not write log => ', err)
-      } else {
-        console.log('Log.txt has been updated')
-      }
-    })
+const writeData = (datum, symbol) => {
+
+  let writeStream = ''
+
+  if (isEmpty(fileContents)) {
+    writeStream += "module.exports = {}\n\n"
+  }
+
+  writeStream += `let ${symbol} = ` + JSON.stringify(datum)
+
+  writeStream += `\n\nmodule.exports.${symbol} = ${symbol}\n\n`
+
+  let comm = `let com = "crickey"`
+
+  fs.appendFile('data.js', comm, (err) => {
+    if (err) {
+      console.log('Did not write log => ', err)
+    } else {
+      console.log('data.js has been updated')
+    }
   })
 }
-
-writeData()
+  
+  
+integrateData('MMM', writeData)
